@@ -56,5 +56,3 @@ class SPSAHistory:
         # Save a copy of the parameters and the energy value
         self.params.append(np.copy(params))
         self.values.append(fval)
-
-from qiskit.primitives import Estimator
