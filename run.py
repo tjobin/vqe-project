@@ -6,6 +6,7 @@ from utils import get_circuit_depth
 from optimizer import SPSAHistory
 
 def run_vqe_simulation(
+        atomic_symbol,
         state_type,
         bond_lengths,
         n_shots_list,
@@ -23,6 +24,7 @@ def run_vqe_simulation(
     numbers of shots, numbers of iterations, and depolarizing error scalings. Saves the results in a .txt file
     in the out/results/ folder and returns a dictionary with the results.
         Args:
+            - atomic_symbol: str, either 'H2' or 'LiH'
             - state_type: str, either 'UCCSD' or 'EfficientSU2'
             - bond_lengths: list, of len N_dist, contains the bond lengths
             - n_shots_list: list, of len N_shots, contains the numbers of shots
@@ -37,7 +39,7 @@ def run_vqe_simulation(
 
     results = {}
 
-    default_p1 = 0.001  # Default depolarizing error probability
+    default_p1 = 0.001  # Default single-qubit depolarizing error probability
     default_p2 = 0.02   # Default two-qubit depolarizing error probability
 
     with open('out/results/' + filename, 'w') as file:
@@ -57,7 +59,13 @@ def run_vqe_simulation(
                     estimator = get_estimator(nqubits=2*active_orbitals, estimator_name='noisy', n_shots=n_shots, p_err_1q=p1_scaled, p_err_2q=p2_scaled)
 
                     for bond_length in bond_lengths:
-                        geometry = f'Li 0 0 0; H 0 0 {bond_length}'
+                        if atomic_symbol == 'H2':
+                            geometry = f'H 0 0 0; H 0 0 {bond_length}'
+                        elif atomic_symbol == 'LiH':
+                            geometry = f'Li 0 0 0; H 0 0 {bond_length}'
+                        else:
+                            raise ValueError("Atomic symbol not supported; must be either 'H2' or 'LiH'")
+                        
                         state, hamiltonian = get_state_and_hamiltonian(state_type=state_type, geometry=geometry, basis_set='sto-3g', active_orb=active_orbitals, n_elec=n_elec)
 
                         print(hamiltonian.size)
