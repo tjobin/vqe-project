@@ -35,6 +35,10 @@ def run_vqe_simulation(
             - optimizer_name: str, name of the optimizer to be used (only 'spsa' implemented)
             - regularization: float, regularization coefficient for the optimizer
             - filename: str, name of the .txt file to be saved in the out/results/ folder
+        Returns:
+            - results: dict, with keys (n_shots, n_iters, dep_error) and values dicts with keys
+            'bond_lengths', 'energies_per_iter', 'depths' containing the corresponding lists of
+            results for each combination of parameters
     """
 
     results = {}
@@ -43,7 +47,7 @@ def run_vqe_simulation(
     default_p2 = 0.02   # Default two-qubit depolarizing error probability
 
     with open('out/results/' + filename, 'w') as file:
-        file.write(f"{'n_shots':<10} {'n_iters':<10} {'dep_error':<12} {'energy_fav':<10} {'depth':<10}\n")  # Write header with spacing
+        file.write(f"{'n_shots':<10} {'n_iters':<10} {'dep_error':<12} {'depth':<10}\n")  # Write header with spacing
 
         for n_shots in n_shots_list:
             for n_iters in n_iters_list:
@@ -51,7 +55,7 @@ def run_vqe_simulation(
                     p1_scaled = dep_error * default_p1
                     p2_scaled = dep_error * default_p2
                     key = (n_shots, n_iters, dep_error)
-                    results[key] = {'bond_lengths': [], 'energies_per_iter': [], 'energies_fav': [], 'depths': []}
+                    results[key] = {'bond_lengths': [], 'energies_per_iter': [], 'depths': []}
                     history_tracker = SPSAHistory()
                     callback = history_tracker.callback
 
@@ -68,26 +72,24 @@ def run_vqe_simulation(
                         
                         state, hamiltonian = get_state_and_hamiltonian(state_type=state_type, geometry=geometry, basis_set='sto-3g', active_orb=active_orbitals, n_elec=n_elec)
 
-                        _, energies, energy_fav = get_vqe_results_v2(
+                        _, energies = get_vqe_results_v2(
                             state=state,
                             hamiltonian=hamiltonian,
                             optimizer=optimizer,
                             estimator=estimator,
-                            history_tracker=history_tracker,
                             filename=f'noisy/{state_type}/n_elec={n_elec}/no={active_orbitals}/shots{n_shots}_iters{n_iters}_scale{dep_error}'
                         )
 
                         depth = get_circuit_depth(state, 'ibm')
                         n_varparams = state.num_parameters
 
-                        print(f"{state_type} Completed: shots={n_shots}, iters={n_iters}, dep_error={dep_error}, bond_length={bond_length}, energy_fav={energy_fav:.6f}, depth={depth}, n_varparams={n_varparams}")
+                        print(f"{state_type} Completed: shots={n_shots}, iters={n_iters}, dep_error={dep_error}, bond_length={bond_length}, depth={depth}, n_varparams={n_varparams}")
 
                         results[key]['bond_lengths'].append(bond_length)
                         results[key]['energies_per_iter'].append(energies)
-                        results[key]['energies_fav'].append(energy_fav)
                         results[key]['depths'].append(depth)
 
                         # Write energy_fav and depth to the file with spacing
-                        file.write(f"{n_shots:<10} {n_iters:<10} {dep_error:<12.6f} {energy_fav:<10.6f} {depth:<10}\n")
+                        file.write(f"{n_shots:<10} {n_iters:<10} {dep_error:<12.6f} {depth:<10}\n")
 
     return results

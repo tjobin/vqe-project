@@ -1,4 +1,3 @@
-from qiskit_algorithms.optimizers.spsa import SPSA
 import numpy as np
 from qiskit import transpile
 from qiskit_aer.primitives import EstimatorV2
@@ -9,8 +8,25 @@ def get_vqe_results_v2(
         hamiltonian,        
         optimizer=SPSA(maxiter=100), 
         estimator=EstimatorV2(),
-        filename='vqe_v2_log'
+        filename='default_filename'
     ):
+
+    """
+    Returns the lists of iteration numbers and corresponding energy values obtained during the VQE optimization process
+    using EstimatorV2. The results are also saved in a .out file in the out/ folder.
+        Args:
+            - state: qiskit.circuit.QuantumCircuit, the ansatz circuit for the VQE simulation
+            - hamiltonian: qiskit.SparsePauliOp, the Hamiltonian of the system for which we want to find the ground state
+            energy
+            - optimizer: qiskit_algorithms.optimizers.optimizer instance, the optimizer to be used in the VQE simulation
+            (default is SPSA with maxiter=100)
+            - estimator: qiskit_aer.primitives.EstimatorV2 instance, the estimator to be used in the VQE simulation
+            - filename: str, name of the .out file to be saved in the out/ folder (without extension)
+        Returns:
+            - iters: list, of N_iters numbers, contains the iteration numbers during the optimization process
+            - energies: list, of N_iters numbers, contains the energy values corresponding to each iteration during the
+            optimization process
+    """
     
     coupling_map = estimator._backend.coupling_map
     target_basis = estimator._backend._basis_gates()
@@ -48,5 +64,4 @@ def get_vqe_results_v2(
 
     fout.close()
     
-    # Return variance as the 4th value
     return iters, energies
