@@ -17,6 +17,24 @@ def run_vqe_simulation(
         regularization=1e-8,
         filename='results.txt'
     ):
+
+    """
+    Runs a VQE simulation for a given state type (UCCSD or EfficientSU2) at different bond lengths,
+    numbers of shots, numbers of iterations, and depolarizing error scalings. Saves the results in a .txt file
+    in the out/results/ folder and returns a dictionary with the results.
+        Args:
+            - state_type: str, either 'UCCSD' or 'EfficientSU2'
+            - bond_lengths: list, of len N_dist, contains the bond lengths
+            - n_shots_list: list, of len N_shots, contains the numbers of shots
+            - n_iters_list: list, of len N_iters, contains the numbers of optimization iterations
+            - depolarizing_errors: list, of len N_errors, contains the scalings of the depolarizing error probabilities
+            - active_orbitals: int, number of active orbitals (2 or 4)
+            - n_elec: int, number of electrons (2 or 4)
+            - optimizer_name: str, name of the optimizer to be used (only 'spsa' implemented)
+            - regularization: float, regularization coefficient for the optimizer
+            - filename: str, name of the .txt file to be saved in the out/results/ folder
+    """
+
     results = {}
 
     default_p1 = 0.001  # Default depolarizing error probability
