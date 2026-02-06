@@ -12,13 +12,14 @@ def get_optimizer(
         regularization : float = 1e-8,
         callback = None
 ):
-        """Returns a qiskit_algorithms.optimizers.optimizer instance
+        """
+        Returns a qiskit_algorithms.optimizers.optimizer instance
             Args:
                 - optimizer : str, type of qiskit optimizer to be instantiated (only possible option is 'spsa')
                 - max_iter : int, max number of optimization iterations (note: not necessarily the number of
                     circuit evalutations; e.g. SPSA requires 2 circuit evaluations.)
-                - regularization : 
-                - callback function of the form 
+                - regularization : float, regularization coefficient to avoid numerical issues
+                - callback: function, of the form 
                     callback(
                         self,
                         n_evals,
@@ -28,6 +29,7 @@ def get_optimizer(
                         accepted
                         )
         """
+        
         if optimizer == 'spsa':
                 optimizer = SPSA(
                     maxiter=max_iter,
