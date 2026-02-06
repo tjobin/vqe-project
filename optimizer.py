@@ -1,4 +1,3 @@
-from qiskit_algorithms.optimizers import optimizer
 from qiskit_algorithms.optimizers.spsa import SPSA
 import qiskit_algorithms
 import numpy as np
@@ -17,7 +16,7 @@ def get_optimizer(
             Args:
                 - optimizer : str, type of qiskit optimizer to be instantiated (only possible option is 'spsa')
                 - max_iter : int, max number of optimization iterations (note: not necessarily the number of
-                    circuit evalutations; e.g. SPSA requires 2 circuit evaluations.)
+                circuit evalutations; e.g. SPSA requires 2 circuit evaluations.)
                 - regularization : float, regularization coefficient to avoid numerical issues
                 - callback: function, of the form 
                     callback(
@@ -28,8 +27,10 @@ def get_optimizer(
                         step_size,
                         accepted
                         )
+            Returns:
+                - optimizer : qiskit_algorithms.optimizers.optimizer instance, the optimizer to be used in the VQE simulation
         """
-        
+
         if optimizer == 'spsa':
                 optimizer = SPSA(
                     maxiter=max_iter,
