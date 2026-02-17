@@ -49,6 +49,8 @@ mkdir plots
 - Define the VQE simulation with the parameters
 - Run VQE with run_vqe_simulation(...)
 
+---
+
 ### 📊 Results
 
 Discovered that EfficientSU2 is significantly more robust to gate errors (up to 1% error rate) than the physically motivated UCCSD, despite UCCSD's superior theoretical convergence rate.
