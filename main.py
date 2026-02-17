@@ -10,10 +10,11 @@ from run import run_vqe_simulation
 ### in the noiseless case and with a depolarizing error scaling of 1, with 100 iterations and no shot noise (nshots=0).
 
 
-# Molecular system parameters
-atomic_symbol = 'LiH'
 state_types = ['UCCSD', 'EfficientSU2']
 
+# Molecular system parameters
+atomic_symbol = 'LiH'
+distances = [1.595,]
 charge = 0
 spin = 0
 active_orb = 2
@@ -26,7 +27,6 @@ op_name = 'spsa'
 noise = 'noisy'
 
 # VQE simulation parameters
-distances = [1.595,]
 nshots_list = [0,]
 niters_list = [100]
 error_scalings= [0, 1]
